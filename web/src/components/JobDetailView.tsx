@@ -51,6 +51,26 @@ export default function JobDetailView({ job, evaluation: initialEvaluation, docu
   const [loadingCover, setLoadingCover] = useState(false)
   const [showApplyPanel, setShowApplyPanel] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [rawJD, setRawJD] = useState<string | null>(job.rawJD ?? null)
+  const [loadingJd, setLoadingJd] = useState(false)
+
+  async function handleFetchJd() {
+    setLoadingJd(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/jobs/${job.id}/fetch-jd`, { method: 'POST' })
+      const data = (await res.json()) as { rawJD?: string; error?: string }
+      if (!res.ok) {
+        setError(data.error ?? 'Could not fetch the job description')
+        return
+      }
+      setRawJD(data.rawJD ?? '')
+    } catch {
+      setError('Network error fetching the description')
+    } finally {
+      setLoadingJd(false)
+    }
+  }
 
   async function handleStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newStatus = e.target.value
@@ -239,12 +259,36 @@ export default function JobDetailView({ job, evaluation: initialEvaluation, docu
 
         {activeTab === 'jd' && (
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            {job.rawJD ? (
+            {rawJD ? (
               <pre className="whitespace-pre-wrap text-sm text-neutral-800 dark:text-neutral-200 leading-relaxed bg-white dark:bg-neutral-950 rounded border border-neutral-200 dark:border-neutral-800 p-4">
-                {job.rawJD}
+                {rawJD}
               </pre>
             ) : (
-              <p className="text-neutral-500">No job description available.</p>
+              <div className="flex flex-col items-start gap-3 rounded border border-dashed border-neutral-300 dark:border-neutral-700 p-6">
+                <p className="text-sm text-neutral-500">
+                  The description hasn’t been fetched yet. Pull it from the posting, or run Evaluate (which fetches it automatically).
+                </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleFetchJd}
+                    disabled={loadingJd || !job.url}
+                    className="rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    {loadingJd ? 'Fetching…' : 'Fetch description'}
+                  </button>
+                  {job.url && (
+                    <a
+                      href={job.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                    >
+                      Open posting →
+                    </a>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         )}
