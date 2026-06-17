@@ -120,3 +120,19 @@ npx prisma generate
   generated PDFs persist across container restarts.
 - **ParadeDB** is external — the container connects over the host network via
   `host.docker.internal:5438`. No DB service is defined in compose.
+
+## Phase A — Verification Status
+
+Built and verified on 2026-06-17 against the live dev ParadeDB (`careerops_dev`):
+
+- `npm run build` — clean production build, all 17 routes; `/` is dynamic (server-rendered dashboard).
+- `npx tsc --noEmit` — clean. `npx vitest run` — 141 passed, 2 skipped (live PDF render gated by `RUN_PDF_TESTS=1`; live DB connection gated by `DATABASE_URL`).
+- Prisma migrations `0_init` + `20260617120000_better_auth_fields` applied via `migrate deploy` (the `careerops` DB user lacks `CREATE DATABASE`, so `migrate dev`'s shadow DB is unavailable — use `migrate deploy`).
+- **Live HTTP walkthrough (DB-backed):**
+  - `GET /login` → 200; `GET /` unauthenticated → 307 → `/login` (proxy guard).
+  - First `POST /api/auth/sign-up/email` → 200 (single account created); `GET /api/has-user` flips `false`→`true`.
+  - Second sign-up → 400 (single-user guard blocks it).
+  - `POST /api/auth/sign-in/email` → 200; `GET /` authenticated → 200, renders the dashboard.
+  - `POST /api/profile/seed` (authenticated) → 200 — seeds `Profile`/`CvMaster` from the parent repo's `config/profile.yml` + `cv.md`.
+
+**Requires API keys (not exercised here):** Find Jobs (Firecrawl `FIRECRAWL_API_KEY`), Evaluate / Tailor CV / Cover letter (LLM key for the configured `LLM_PROVIDER`). Set these in `web/.env` to use those features. PDF generation also requires Playwright Chromium (installed in the Docker image).
