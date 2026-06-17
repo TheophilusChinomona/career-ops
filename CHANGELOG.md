@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.12.0](https://github.com/santifer/career-ops/compare/career-ops-v1.11.0...career-ops-v1.12.0) (2026-06-17)
+
+
+### Features
+
+* **pdf:** render Japanese CVs with a lang="ja" CJK font fallback ([#1053](https://github.com/santifer/career-ops/issues/1053)) ([d0d57d1](https://github.com/santifer/career-ops/commit/d0d57d184649615b638812156a24c87ceafab8a2))
+
+
+### Bug Fixes
+
+* **dashboard:** report last-contact in calendar days, not hours-since-midnight ([#1057](https://github.com/santifer/career-ops/issues/1057)) ([4e05cfd](https://github.com/santifer/career-ops/commit/4e05cfda98b5dccfd2c664c12335ee20812b451b))
+* **latex:** language-agnostic section validation + CJK guard ([#1054](https://github.com/santifer/career-ops/issues/1054)) ([b147504](https://github.com/santifer/career-ops/commit/b147504ade6f1f6fb0445dbe09dfcf380ab01260))
+
 ## [1.11.0](https://github.com/santifer/career-ops/compare/career-ops-v1.10.0...career-ops-v1.11.0) (2026-06-15)
 
 
