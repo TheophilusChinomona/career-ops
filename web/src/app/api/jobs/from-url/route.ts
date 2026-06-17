@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
     if (
       message.includes('URL must use http') ||
       message.includes('Invalid URL') ||
+      message.includes('listing or category page') ||
       message.startsWith('url is required')
     ) {
       return Response.json({ error: message }, { status: 400 })

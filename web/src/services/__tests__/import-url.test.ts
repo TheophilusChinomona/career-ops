@@ -230,4 +230,12 @@ describe('addJobFromUrl', () => {
       addJobFromUrl({ userId: 'user-1', url: 'not-a-url', apiKey: 'fc-key' }),
     ).rejects.toThrow(/Invalid URL/)
   })
+
+  it('rejects listing/category pages (role looks like nav)', async () => {
+    const { scrapeJD } = await import('@/services/search')
+    ;(scrapeJD as unknown as { mockResolvedValue: (v: string) => void }).mockResolvedValue('# Browse Jobs\n\nAll remote jobs by category...')
+    const provider = { complete: vi.fn().mockResolvedValue(JSON.stringify({ company: 'Remotehub', role: 'Browse Jobs', location: '' })) }
+    await expect(addJobFromUrl({ userId: 'u1', url: 'https://www.remotehub.com/jobs', apiKey: 'fc', provider })).rejects.toThrow(/listing or category/i)
+  })
+
 })

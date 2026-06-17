@@ -124,6 +124,12 @@ export async function addJobFromUrl(args: {
   // Extract structured fields
   const f = await extractJobFields({ markdown, pageTitle, url, provider })
 
+  // Reject listing / category / nav pages — Add-by-URL is for a single posting.
+  const role = (f.role || '').trim()
+  if (/^(browse|search|all|jobs?|remote jobs?|listings?|categor|home|find jobs)\b/i.test(role) || /\b(browse|all|search)\s+jobs?\b/i.test(role)) {
+    throw new Error('That looks like a listing or category page — paste a single job posting URL')
+  }
+
   // Dedupe check
   const existing = await db.job.findFirst({
     where: { userId, company: f.company, role: f.role },
