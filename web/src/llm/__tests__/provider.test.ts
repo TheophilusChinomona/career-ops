@@ -1,3 +1,7 @@
+// @vitest-environment node
+// Providers instantiate server-side SDKs (e.g. Anthropic) that reject a
+// browser-like (jsdom) environment. These run server-side only, so test them
+// in a node environment rather than weakening the SDK's browser guard.
 import { describe, it, expect } from 'vitest'
 import { getProvider } from '../provider'
 
