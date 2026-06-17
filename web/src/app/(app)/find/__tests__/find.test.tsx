@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 // Mock next/link
 vi.mock('next/link', () => ({
@@ -38,6 +38,10 @@ describe('FindPage', () => {
         json: async () => ({ added: 2, jobs: mockJobs }),
       }),
     )
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   it('renders a search input and submit button', () => {
@@ -157,6 +161,52 @@ describe('FindPage', () => {
       const hrefs = evaluateLinks.map((l) => l.getAttribute('href'))
       expect(hrefs).toContain('/jobs/job-1')
       expect(hrefs).toContain('/jobs/job-2')
+    })
+  })
+})
+
+describe('Scan boards', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('renders a Scan boards button', () => {
+    render(<FindPage />)
+    expect(screen.getByRole('button', { name: /scan boards/i })).toBeInTheDocument()
+  })
+
+  it('POSTs to /api/scan with no body on click', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ scanned: 12, found: 30, added: 5, jobs: mockJobs }),
+    }))
+    render(<FindPage />)
+    fireEvent.click(screen.getByRole('button', { name: /scan boards/i }))
+    await waitFor(() => expect(screen.getByText('TechCorp')).toBeInTheDocument())
+    expect(fetch).toHaveBeenCalledWith('/api/scan', expect.objectContaining({ method: 'POST' }))
+  })
+
+  it('shows scanning state during scan', async () => {
+    let resolvePromise!: (v: unknown) => void
+    const deferred = new Promise((resolve) => { resolvePromise = resolve })
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(deferred))
+    render(<FindPage />)
+    fireEvent.click(screen.getByRole('button', { name: /scan boards/i }))
+    expect(screen.getByRole('button', { name: /scanning/i })).toBeInTheDocument()
+    await act(async () => {
+      resolvePromise({ ok: true, json: async () => ({ scanned: 12, found: 0, added: 0, jobs: [] }) })
+    })
+  })
+
+  it('shows scan summary after scan completes', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ scanned: 12, found: 30, added: 5, jobs: mockJobs }),
+    }))
+    render(<FindPage />)
+    fireEvent.click(screen.getByRole('button', { name: /scan boards/i }))
+    await waitFor(() => {
+      expect(screen.getByText(/scanned 12 companies/i)).toBeInTheDocument()
     })
   })
 })

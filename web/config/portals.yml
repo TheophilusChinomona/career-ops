@@ -1,0 +1,55 @@
+# User-owned configuration — add/remove companies freely.
+# Slugs are auto-detected from careers_url. If a board 404s or errors, it is silently skipped.
+# title_filter: positive = at least one must match (case-insensitive substring); negative = any match = excluded.
+
+title_filter:
+  positive:
+    - "project coordinator"
+    - "project manager"
+    - "junior project"
+    - "project administrator"
+    - "program coordinator"
+    - "operations coordinator"
+    - "associate project"
+    - "project officer"
+  negative:
+    - "senior"
+    - "lead"
+    - "principal"
+    - "staff"
+    - "director"
+    - "head of"
+    - "vp "
+    - "chief"
+    - "manager, "
+    - " ii"
+    - " iii"
+
+tracked_companies:
+  # Greenhouse
+  - name: Canonical
+    careers_url: https://job-boards.greenhouse.io/canonical
+  - name: GitLab
+    careers_url: https://boards.greenhouse.io/gitlab
+  - name: Andela
+    careers_url: https://boards.greenhouse.io/andela
+  - name: Automattic
+    careers_url: https://job-boards.greenhouse.io/automattic
+  - name: Remote.com
+    careers_url: https://job-boards.greenhouse.io/remotecom
+  - name: Wikimedia Foundation
+    careers_url: https://job-boards.greenhouse.io/wikimedia
+  # Ashby
+  - name: Linear
+    careers_url: https://jobs.ashbyhq.com/linear
+  - name: Deel
+    careers_url: https://jobs.ashbyhq.com/deel
+  - name: Vercel
+    careers_url: https://jobs.ashbyhq.com/vercel
+  # Lever
+  - name: Buffer
+    careers_url: https://jobs.lever.co/buffer
+  - name: Doist
+    careers_url: https://jobs.lever.co/doist
+  - name: Help Scout
+    careers_url: https://jobs.lever.co/helpscout

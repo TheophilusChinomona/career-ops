@@ -9,9 +9,11 @@ type JobResult = Pick<Job, 'id' | 'company' | 'role' | 'location' | 'status' | '
 export default function FindPage() {
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
+  const [scanning, setScanning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [results, setResults] = useState<JobResult[] | null>(null)
   const [added, setAdded] = useState<number | null>(null)
+  const [scanInfo, setScanInfo] = useState<{ scanned: number; added: number } | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -45,6 +47,30 @@ export default function FindPage() {
     }
   }
 
+  async function handleScan() {
+    setScanning(true)
+    setError(null)
+    setScanInfo(null)
+
+    try {
+      const res = await fetch('/api/scan', { method: 'POST' })
+      const data = await res.json() as { scanned?: number; found?: number; added?: number; jobs?: JobResult[]; error?: string }
+
+      if (!res.ok) {
+        setError(data.error ?? 'Scan failed')
+        return
+      }
+
+      setAdded(data.added ?? 0)
+      setResults(data.jobs ?? [])
+      setScanInfo({ scanned: data.scanned ?? 0, added: data.added ?? 0 })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Scan failed')
+    } finally {
+      setScanning(false)
+    }
+  }
+
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
       <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">Find Jobs</h1>
@@ -65,6 +91,14 @@ export default function FindPage() {
         >
           {loading ? 'Searching…' : 'Search'}
         </button>
+        <button
+          type="button"
+          onClick={handleScan}
+          disabled={loading || scanning}
+          className="rounded-lg bg-neutral-700 dark:bg-neutral-200 text-white dark:text-neutral-900 px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
+          {scanning ? 'Scanning…' : 'Scan boards'}
+        </button>
       </form>
 
       {error && (
@@ -80,6 +114,11 @@ export default function FindPage() {
           )}
           {added === 0 && (
             <p className="text-sm text-neutral-500">No new jobs added (all already in pipeline).</p>
+          )}
+          {scanInfo && (
+            <p className="text-sm text-neutral-500">
+              Scanned {scanInfo.scanned} companies, added {scanInfo.added}
+            </p>
           )}
 
           {results.length === 0 ? (

@@ -22,7 +22,7 @@ function extractCompany(candidate: Candidate): string {
  * Insert new candidates for a user, deduplicating on (userId, company, role).
  * Returns the number of new rows inserted.
  */
-export async function addCandidates(userId: string, candidates: Candidate[]): Promise<number> {
+export async function addCandidates(userId: string, candidates: Candidate[], source = 'firecrawl'): Promise<number> {
   if (candidates.length === 0) return 0
 
   // Fetch existing (company, role) pairs for this user
@@ -38,7 +38,8 @@ export async function addCandidates(userId: string, candidates: Candidate[]): Pr
     company: extractCompany(c),
     role: extractRole(c.title),
     url: c.url,
-    source: 'firecrawl',
+    source,
+    location: c.location,
   }))
 
   // Filter out rows that already exist in the DB

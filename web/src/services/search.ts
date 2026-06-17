@@ -1,4 +1,4 @@
-export type Candidate = { url: string; title: string; description?: string; company?: string }
+export type Candidate = { url: string; title: string; description?: string; company?: string; location?: string }
 
 type RawResult = { url: string; title: string; description?: string }
 

@@ -90,4 +90,42 @@ describe('addCandidates', () => {
     expect(count).toBe(0)
     expect(mockDb.job.createMany).not.toHaveBeenCalled()
   })
+
+  it('uses custom source param when provided', async () => {
+    mockDb.job.findMany.mockResolvedValue([])
+    mockDb.job.createMany.mockResolvedValue({ count: 1 })
+
+    const candidates: Candidate[] = [
+      { url: 'https://x.com/job/99', title: 'Operations Manager @ ScanCo', company: 'ScanCo' },
+    ]
+
+    await addCandidates('user-1', candidates, 'scan')
+
+    expect(mockDb.job.createMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.arrayContaining([
+          expect.objectContaining({ source: 'scan' }),
+        ]),
+      }),
+    )
+  })
+
+  it('maps candidate location to job location', async () => {
+    mockDb.job.findMany.mockResolvedValue([])
+    mockDb.job.createMany.mockResolvedValue({ count: 1 })
+
+    const candidates: Candidate[] = [
+      { url: 'https://x.com/job/100', title: 'Project Manager @ RemoteCo', company: 'RemoteCo', location: 'Remote' },
+    ]
+
+    await addCandidates('user-1', candidates)
+
+    expect(mockDb.job.createMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.arrayContaining([
+          expect.objectContaining({ location: 'Remote' }),
+        ]),
+      }),
+    )
+  })
 })
