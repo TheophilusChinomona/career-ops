@@ -10,24 +10,15 @@ vi.mock('next/link', () => ({
   ),
 }))
 
-type JobLike = Pick<Job, 'id' | 'company' | 'role' | 'location' | 'status' | 'score' | 'createdAt' | 'updatedAt' | 'userId' | 'url' | 'rawJD' | 'source' | 'remote' | 'applyUrl' | 'legitimacy'>
+type JobLike = Pick<Job, 'id' | 'company' | 'role' | 'location' | 'status' | 'score'>
 
 const base: JobLike = {
   id: 'j1',
-  userId: 'u1',
   company: 'Acme',
   role: 'Engineer',
   location: 'Remote',
   status: 'New',
   score: null,
-  url: 'https://example.com',
-  rawJD: null,
-  source: null,
-  remote: false,
-  applyUrl: null,
-  legitimacy: null,
-  createdAt: new Date(),
-  updatedAt: new Date(),
 }
 
 const jobs: JobLike[] = [
