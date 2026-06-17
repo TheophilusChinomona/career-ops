@@ -74,9 +74,11 @@ describe('renderCvHtml', () => {
     expect(html).toContain('University of Cape Town')
   })
 
-  it('includes certifications', () => {
+  it('includes every certification', () => {
     const html = renderCvHtml(cv, contact)
-    expect(html).toContain('AWS Certified Developer')
+    for (const cert of cv.certs) {
+      expect(html).toContain(cert)
+    }
   })
 
   it('includes skills', () => {

@@ -19,10 +19,13 @@ function esc(text: string): string {
 
 export function renderCvHtml(cv: TailoredCvOut, contact: CvContact): string {
   const contactItems: string[] = []
-  if (contact.email) contactItems.push(`<span><span class="ico">&#10003;</span>${esc(contact.email)}</span>`)
-  if (contact.phone) contactItems.push(`<span><span class="ico">&#9990;</span>${esc(contact.phone)}</span>`)
-  if (contact.linkedin) contactItems.push(`<a href="https://${esc(contact.linkedin)}"><span class="ico">in</span>${esc(contact.linkedin)}</a>`)
-  if (contact.location) contactItems.push(`<span><span class="ico">&#9760;</span>${esc(contact.location)}</span>`)
+  if (contact.email) contactItems.push(`<span><span class="ico">✉</span>${esc(contact.email)}</span>`)
+  if (contact.phone) contactItems.push(`<span><span class="ico">☎</span>${esc(contact.phone)}</span>`)
+  if (contact.linkedin) {
+    const href = /^https?:\/\//i.test(contact.linkedin) ? contact.linkedin : `https://${contact.linkedin}`
+    contactItems.push(`<a href="${esc(href)}"><span class="ico">in</span>${esc(contact.linkedin)}</a>`)
+  }
+  if (contact.location) contactItems.push(`<span><span class="ico">⚲</span>${esc(contact.location)}</span>`)
 
   const availBadge = contact.availability
     ? `<span class="avail">${esc(contact.availability)}</span>`

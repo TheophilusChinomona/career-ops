@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Prisma generated client (regenerated via `prisma generate`)
 /src/generated
+
+# Generated PDF outputs
+/storage/pdfs/

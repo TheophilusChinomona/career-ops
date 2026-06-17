@@ -33,10 +33,13 @@ export function renderCoverHtml({ contact, recipient, date, body }: CoverLetterI
   const pTags = paragraphs.map(p => `  <p>${esc(p)}</p>`).join('\n')
 
   const contactItems: string[] = []
-  if (contact.email) contactItems.push(`<span><span class="ico">&#10003;</span>${esc(contact.email)}</span>`)
-  if (contact.phone) contactItems.push(`<span><span class="ico">&#9990;</span>${esc(contact.phone)}</span>`)
-  if (contact.linkedin) contactItems.push(`<a href="https://${esc(contact.linkedin)}"><span class="ico">in</span>${esc(contact.linkedin)}</a>`)
-  if (contact.location) contactItems.push(`<span><span class="ico">&#9760;</span>${esc(contact.location)}</span>`)
+  if (contact.email) contactItems.push(`<span><span class="ico">✉</span>${esc(contact.email)}</span>`)
+  if (contact.phone) contactItems.push(`<span><span class="ico">☎</span>${esc(contact.phone)}</span>`)
+  if (contact.linkedin) {
+    const href = /^https?:\/\//i.test(contact.linkedin) ? contact.linkedin : `https://${contact.linkedin}`
+    contactItems.push(`<a href="${esc(href)}"><span class="ico">in</span>${esc(contact.linkedin)}</a>`)
+  }
+  if (contact.location) contactItems.push(`<span><span class="ico">⚲</span>${esc(contact.location)}</span>`)
 
   const roleTagHtml = contact.roleTag
     ? `\n  <div class="role-tag">${esc(contact.roleTag)}</div>`
