@@ -22,8 +22,11 @@ export async function POST(
 
     const userId = session.user.id
 
-    // Parse body
-    const { type } = (await request.json()) as { type: 'cv' | 'cover' }
+    // Parse and validate body
+    const { type } = (await request.json()) as { type: unknown }
+    if (type !== 'cv' && type !== 'cover') {
+      return Response.json({ error: 'type must be "cv" or "cover"' }, { status: 400 })
+    }
 
     // Load profile, cvMaster, job scoped to user
     const profile = await db.profile.findUnique({ where: { userId } })
@@ -73,6 +76,7 @@ export async function POST(
         contact,
         provider,
         archetype: job.archetype ?? undefined,
+        company: job.company,
       })
       html = result.html
       pdfPath = result.pdfPath

@@ -1,5 +1,5 @@
 import { type NextRequest } from 'next/server'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 
@@ -25,19 +25,28 @@ export async function GET(
       return Response.json({ error: 'Document not found' }, { status: 404 })
     }
 
-    // Check the file exists on disk
-    if (!existsSync(doc.pdfPath)) {
-      return Response.json({ error: 'PDF file not found' }, { status: 404 })
+    // Read the PDF file asynchronously
+    let fileBuffer: Buffer
+    try {
+      fileBuffer = await readFile(doc.pdfPath)
+    } catch (fsErr) {
+      if ((fsErr as NodeJS.ErrnoException).code === 'ENOENT') {
+        return Response.json({ error: 'PDF file not found' }, { status: 404 })
+      }
+      throw fsErr
     }
 
-    // Read the PDF file and return it
-    const buffer = readFileSync(doc.pdfPath)
+    // Copy into a plain ArrayBuffer to satisfy BodyInit typing
+    const ab = fileBuffer.buffer.slice(
+      fileBuffer.byteOffset,
+      fileBuffer.byteOffset + fileBuffer.byteLength,
+    ) as ArrayBuffer
 
-    return new Response(buffer, {
+    return new Response(ab, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `inline; filename="${encodeURIComponent(doc.label)}.pdf"`,
-        'Content-Length': String(buffer.byteLength),
+        'Content-Length': String(fileBuffer.byteLength),
       },
     })
   } catch (err) {

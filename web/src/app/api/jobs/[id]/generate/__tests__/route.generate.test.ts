@@ -138,6 +138,14 @@ beforeEach(() => {
 })
 
 describe('POST /api/jobs/[id]/generate', () => {
+  it('returns 400 when type is invalid', async () => {
+    const [req, ctx] = buildRequest('job-1', { type: 'invalid' })
+    const res = await POST(req as Parameters<typeof POST>[0], ctx)
+    expect(res.status).toBe(400)
+    const body = await res.json()
+    expect(body.error).toBe('type must be "cv" or "cover"')
+  })
+
   it('returns 401 when no session', async () => {
     mockAuth.api.getSession.mockResolvedValue(null)
     const [req, ctx] = buildRequest('job-1', { type: 'cv' })
@@ -187,6 +195,15 @@ describe('POST /api/jobs/[id]/generate', () => {
 
     expect(res.status).toBe(200)
     expect(mockGenerateCover).toHaveBeenCalledOnce()
+    expect(mockGenerateCover).toHaveBeenCalledWith(
+      expect.objectContaining({
+        job: expect.objectContaining({
+          company: fakeJob.company,
+          role: fakeJob.role,
+          rawJD: fakeJob.rawJD,
+        }),
+      }),
+    )
     expect(mockDb.document.create).toHaveBeenCalledOnce()
 
     const body = await res.json()

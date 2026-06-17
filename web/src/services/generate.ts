@@ -16,6 +16,8 @@ export interface GenerateCvInput {
   contact: CvContact
   provider: LLMProvider
   archetype?: string
+  /** Include in the PDF slug so CVs for different jobs don't overwrite each other */
+  company?: string
 }
 
 export interface GenerateCvResult {
@@ -49,7 +51,7 @@ export interface GenerateCoverResult {
 // ---- helpers ----
 
 /** Derive a filesystem-safe slug from contact name + company or job context */
-function makeSlug(parts: string[]): string {
+function makeSlug(parts: (string | undefined)[]): string {
   return parts
     .filter(Boolean)
     .join('-')
@@ -67,6 +69,7 @@ export async function generateCv({
   contact,
   provider,
   archetype = 'general',
+  company,
 }: GenerateCvInput): Promise<GenerateCvResult> {
   // 1. Build tailored CV via LLM
   const cv = await runValidated(
@@ -78,8 +81,8 @@ export async function generateCv({
   // 2. Render to HTML
   const html = renderCvHtml(cv, contact)
 
-  // 3. Render to PDF (slug derived from contact name)
-  const slug = makeSlug([contact.name])
+  // 3. Render to PDF (slug derived from contact name + company so two CVs for different jobs don't collide)
+  const slug = makeSlug([contact.name, company])
   const pdfPath = await renderPdf(html, `cv-${slug}`)
 
   return { html, pdfPath, cv }
