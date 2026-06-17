@@ -31,7 +31,7 @@ export default function Sidebar() {
                   href={href}
                   aria-current={isActive ? 'page' : undefined}
                   className={[
-                    'block rounded px-3 py-2 text-sm font-medium transition-colors',
+                    'block rounded px-3 py-2.5 text-sm font-medium transition-colors',
                     isActive
                       ? 'bg-neutral-800 text-white'
                       : 'text-neutral-400 hover:bg-neutral-900 hover:text-white',
