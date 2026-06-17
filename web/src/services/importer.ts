@@ -224,6 +224,11 @@ function extractEducation(sections: Map<string, string>): EducationItem[] {
   return items
 }
 
+/** Returns true for markdown horizontal rules (---, ***, ___, or any line of only those chars). */
+function isHorizontalRule(line: string): boolean {
+  return /^[-*_]{3,}$/.test(line)
+}
+
 function extractCerts(sections: Map<string, string>): string[] {
   const body = findSection(sections, 'certifications', 'certs', 'certificates')
   if (!body) return []
@@ -231,13 +236,22 @@ function extractCerts(sections: Map<string, string>): string[] {
   const certs: string[] = []
   for (const line of body.split('\n')) {
     const trimmed = line.trim()
+    // Skip empty lines, headings, and horizontal rules
+    if (!trimmed || trimmed.startsWith('#') || isHorizontalRule(trimmed)) continue
+
     if (trimmed.startsWith('- ')) {
       certs.push(trimmed.slice(2).trim())
-    } else if (trimmed && !trimmed.startsWith('#')) {
+    } else {
       certs.push(trimmed)
     }
   }
   return certs.filter(Boolean)
+}
+
+/** Split a skills item string on bullet separators (·, •, |) but NOT on commas,
+ *  so parenthetical lists like "Microsoft Office (Word, Excel, PowerPoint)" stay intact. */
+function splitSkillItems(raw: string): string[] {
+  return raw.split(/[·•|]/).map((s) => s.trim()).filter(Boolean)
 }
 
 function extractSkills(sections: Map<string, string>): SkillGroup[] {
@@ -250,20 +264,22 @@ function extractSkills(sections: Map<string, string>): SkillGroup[] {
     const trimmed = line.trim()
     if (!trimmed) continue
 
-    // Pattern: **Category:** items  or  **Category:** items
-    const boldMatch = trimmed.match(/^\*\*(.+?)\*\*[:\s]+(.+)$/)
+    // Pattern: **Category:** items — the colon is inside the bold span, before the closing **
+    // This matches "**Category:** items" as it appears in the real cv.md.
+    // Lines with bold text but no colon (e.g. "**Just bold**") are intentionally excluded.
+    const boldMatch = trimmed.match(/^\*\*(.+?):\*\*\s*(.+)$/)
     if (boldMatch) {
       const category = boldMatch[1].replace(/:$/, '').trim()
-      const items = boldMatch[2].split(/[·•,]/).map((s) => s.trim()).filter(Boolean)
+      const items = splitSkillItems(boldMatch[2])
       groups.push({ category, items })
       continue
     }
 
-    // Plain "Category: items" line
-    const plainMatch = trimmed.match(/^([^:]+):\s+(.+)$/)
+    // Plain "Category: items" line (no bold markers)
+    const plainMatch = trimmed.match(/^([^*][^:]*?):\s+(.+)$/)
     if (plainMatch) {
       const category = plainMatch[1].trim()
-      const items = plainMatch[2].split(/[·•,]/).map((s) => s.trim()).filter(Boolean)
+      const items = splitSkillItems(plainMatch[2])
       groups.push({ category, items })
     }
   }
@@ -277,13 +293,25 @@ function extractSkills(sections: Map<string, string>): SkillGroup[] {
 // ---------------------------------------------------------------------------
 
 export function readRepoSources(): { profile: ParsedProfile; cv: ParsedCv } {
-  // web/ is one level below the career-ops root
-  const root = path.resolve(__dirname, '../../..')
+  // web/ is one level below the career-ops root.
+  // Use process.cwd() (which is web/ when vitest or the seed script runs) rather
+  // than __dirname — __dirname is undefined in ESM (tsconfig module=esnext).
+  const root = path.resolve(process.cwd(), '..')
   const profilePath = path.join(root, 'config', 'profile.yml')
   const cvPath = path.join(root, 'cv.md')
 
-  const profileYaml = fs.readFileSync(profilePath, 'utf-8')
-  const cvMd = fs.readFileSync(cvPath, 'utf-8')
+  let profileYaml: string
+  let cvMd: string
+  try {
+    profileYaml = fs.readFileSync(profilePath, 'utf-8')
+  } catch {
+    throw new Error(`Cannot read ${profilePath} — run from the web/ directory of a set-up career-ops repo`)
+  }
+  try {
+    cvMd = fs.readFileSync(cvPath, 'utf-8')
+  } catch {
+    throw new Error(`Cannot read ${cvPath} — run from the web/ directory of a set-up career-ops repo`)
+  }
 
   return {
     profile: parseProfileYaml(profileYaml),
