@@ -25,3 +25,10 @@ export const TailoredCvSchema = z.object({
   skills: z.array(z.object({ category: z.string(), items: z.array(z.string()) })),
 })
 export type TailoredCvOut = z.infer<typeof TailoredCvSchema>
+
+export const JobExtractSchema = z.object({
+  company: z.string(),
+  role: z.string(),
+  location: z.string().optional(),
+})
+export type JobExtractOut = z.infer<typeof JobExtractSchema>
