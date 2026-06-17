@@ -116,7 +116,7 @@ export default function FindPage() {
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
-      <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">Find Jobs</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">Find Jobs</h1>
 
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input

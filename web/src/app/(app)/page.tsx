@@ -15,7 +15,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 mb-6">Dashboard</h1>
       <DashboardView jobs={jobs} />
     </div>
   )

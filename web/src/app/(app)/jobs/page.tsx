@@ -15,7 +15,7 @@ export default async function MyJobsPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100 mb-6">My Jobs</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 mb-6">My Jobs</h1>
       <JobsTable jobs={jobs} />
     </div>
   )
