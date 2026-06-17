@@ -1,21 +1,14 @@
-// Prisma 7 requires a driver adapter — no URL in schema.prisma.
-// Install `@prisma/adapter-pg` and `pg` then run: npm install @prisma/adapter-pg pg
+// Prisma 7 requires a driver adapter — there is no `url` in schema.prisma.
 // The generated client lives at src/generated/prisma (set in prisma.config.ts).
 import { PrismaClient } from '../generated/prisma'
-import type { PrismaClientOptions } from '../generated/prisma/runtime/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 type PrismaGlobal = { prisma?: PrismaClient }
 const g = globalThis as unknown as PrismaGlobal
 
 function createClient(): PrismaClient {
-  // Dynamically require the adapter so the module can be imported in test
-  // environments where @prisma/adapter-pg is not yet installed (the live-DB
-  // test is BLOCKED until the package is available).
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { PrismaPg } = require('@prisma/adapter-pg')
-  const connectionString = process.env.DATABASE_URL!
-  const adapter = new PrismaPg({ connectionString })
-  return new PrismaClient({ adapter } as PrismaClientOptions)
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+  return new PrismaClient({ adapter })
 }
 
 export const db: PrismaClient = g.prisma ?? createClient()
