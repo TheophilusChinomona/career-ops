@@ -86,10 +86,9 @@ export default function FindPage() {
             <p className="text-sm text-neutral-500">No results found.</p>
           ) : (
             results.map((job) => (
-              <Link
+              <div
                 key={job.id}
-                href={`/jobs/${job.id}`}
-                className="block rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-4 hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
+                className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-4"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
@@ -99,8 +98,11 @@ export default function FindPage() {
                     <p className="text-sm text-neutral-600 dark:text-neutral-400">{job.role}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center rounded px-2 py-0.5 text-xs bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
-                      {job.status}
+                    <span
+                      className="inline-flex items-center rounded px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300"
+                      aria-label="Added to pipeline"
+                    >
+                      Added to pipeline
                     </span>
                     {job.score !== null && job.score !== undefined && (
                       <span className="text-xs text-neutral-500">{job.score.toFixed(1)}/5</span>
@@ -110,7 +112,15 @@ export default function FindPage() {
                 {job.location && (
                   <p className="text-xs text-neutral-500 mt-1">{job.location}</p>
                 )}
-              </Link>
+                <div className="mt-2">
+                  <Link
+                    href={`/jobs/${job.id}`}
+                    className="text-xs font-medium text-neutral-700 dark:text-neutral-300 underline hover:text-neutral-900 dark:hover:text-neutral-100"
+                  >
+                    Evaluate now
+                  </Link>
+                </div>
+              </div>
             ))
           )}
         </div>

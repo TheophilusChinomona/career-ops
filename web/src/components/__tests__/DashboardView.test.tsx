@@ -47,10 +47,18 @@ describe('DashboardView', () => {
 
   it('shows count by status in the stats strip', () => {
     render(<DashboardView jobs={jobs} />)
-    // Expect the status labels appear at least once (they appear in stats strip)
-    expect(screen.getAllByText(/New/).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText(/Evaluated/).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText(/Applied/).length).toBeGreaterThanOrEqual(1)
+    // Assert using stable data-testid on each stat row so we're not confused by JobCard badges
+    const newStat = screen.getByTestId('stat-status-New')
+    expect(newStat).toBeInTheDocument()
+    expect(newStat).toHaveTextContent('1')
+
+    const evaluatedStat = screen.getByTestId('stat-status-Evaluated')
+    expect(evaluatedStat).toBeInTheDocument()
+    expect(evaluatedStat).toHaveTextContent('1')
+
+    const appliedStat = screen.getByTestId('stat-status-Applied')
+    expect(appliedStat).toBeInTheDocument()
+    expect(appliedStat).toHaveTextContent('1')
   })
 
   it('shows correct job count', () => {

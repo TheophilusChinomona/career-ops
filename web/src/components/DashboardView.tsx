@@ -69,7 +69,11 @@ export default function DashboardView({ jobs }: Props) {
           <p className="text-xs text-neutral-500 uppercase tracking-wide mb-1">By Status</p>
           <div className="flex flex-col gap-0.5">
             {Object.entries(statusCounts).map(([status, count]) => (
-              <p key={status} className="text-xs text-neutral-700 dark:text-neutral-300">
+              <p
+                key={status}
+                data-testid={`stat-status-${status}`}
+                className="text-xs text-neutral-700 dark:text-neutral-300"
+              >
                 <span className="font-semibold">{count}</span> {status}
               </p>
             ))}
