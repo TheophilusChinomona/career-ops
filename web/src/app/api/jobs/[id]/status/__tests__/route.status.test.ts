@@ -120,4 +120,13 @@ describe('POST /api/jobs/[id]/status', () => {
     const body = await res.json()
     expect(body.error).toMatch(/not found/i)
   })
+
+  it('returns 500 with {error} when setStatus throws', async () => {
+    mockSetStatus.mockRejectedValue(new Error('DB write failed'))
+    const [req, ctx] = buildRequest('job-1', { status: 'Applied' })
+    const res = await POST(req as Parameters<typeof POST>[0], ctx)
+    expect(res.status).toBe(500)
+    const body = await res.json()
+    expect(body.error).toBe('DB write failed')
+  })
 })

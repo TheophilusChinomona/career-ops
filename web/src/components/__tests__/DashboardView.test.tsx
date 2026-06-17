@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import DashboardView from '../DashboardView'
 import type { Job } from '@/generated/prisma'
@@ -47,16 +47,18 @@ describe('DashboardView', () => {
 
   it('shows count by status in the stats strip', () => {
     render(<DashboardView jobs={jobs} />)
-    // Assert using stable data-testid on each stat row so we're not confused by JobCard badges
-    const newStat = screen.getByTestId('stat-status-New')
+    // Scope to the stats strip container so a broken strip can't be masked by JobCard badges
+    const strip = screen.getByTestId('stats-strip')
+
+    const newStat = within(strip).getByTestId('stat-status-New')
     expect(newStat).toBeInTheDocument()
     expect(newStat).toHaveTextContent('1')
 
-    const evaluatedStat = screen.getByTestId('stat-status-Evaluated')
+    const evaluatedStat = within(strip).getByTestId('stat-status-Evaluated')
     expect(evaluatedStat).toBeInTheDocument()
     expect(evaluatedStat).toHaveTextContent('1')
 
-    const appliedStat = screen.getByTestId('stat-status-Applied')
+    const appliedStat = within(strip).getByTestId('stat-status-Applied')
     expect(appliedStat).toBeInTheDocument()
     expect(appliedStat).toHaveTextContent('1')
   })

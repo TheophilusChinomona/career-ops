@@ -1,0 +1,31 @@
+# CareerOps Web — docker-compose
+#
+# Database: ParadeDB is EXTERNAL (100.69.186.86:5438 / careerops_dev).
+# Set DATABASE_URL in web/.env pointing at the reachable DB, e.g.:
+#   DATABASE_URL=postgresql://careerops:<password>@host.docker.internal:5438/careerops_dev
+# extra_hosts below maps host.docker.internal → the host machine's gateway so
+# the container can reach ParadeDB running on the host network.
+#
+# Usage:
+#   cd career-ops/web
+#   docker compose build
+#   docker compose up -d
+#   curl http://localhost:3000/login
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    volumes:
+      - careerops_pdfs:/app/web/storage/pdfs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  careerops_pdfs:

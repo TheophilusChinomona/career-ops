@@ -46,7 +46,7 @@ export default function DashboardView({ jobs }: Props) {
   return (
     <div className="flex flex-col gap-6">
       {/* Stats strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div data-testid="stats-strip" className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-4">
           <p className="text-xs text-neutral-500 uppercase tracking-wide">Total Jobs</p>
           <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // Mock next/link
@@ -113,6 +113,50 @@ describe('FindPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/search failed/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows loading state while fetch is in flight', async () => {
+    let resolvePromise!: (value: unknown) => void
+    const deferred = new Promise((resolve) => {
+      resolvePromise = resolve
+    })
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockReturnValue(deferred),
+    )
+
+    render(<FindPage />)
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'engineer' } })
+    fireEvent.click(screen.getByRole('button', { name: /search/i }))
+
+    // While fetch is still pending the button should show busy label
+    expect(screen.getByRole('button', { name: /searching/i })).toBeInTheDocument()
+    // And the input should be disabled
+    expect(screen.getByRole('textbox')).toBeDisabled()
+
+    // Resolve the deferred promise so we don't leak async work
+    await act(async () => {
+      resolvePromise({
+        ok: true,
+        json: async () => ({ added: 0, jobs: [] }),
+      })
+    })
+  })
+
+  it('shows an Evaluate CTA link for each result', async () => {
+    render(<FindPage />)
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'engineer' } })
+    fireEvent.click(screen.getByRole('button', { name: /search/i }))
+
+    await waitFor(() => {
+      // Each result should surface an explicit "Evaluate" (or similar) labelled link
+      const evaluateLinks = screen.getAllByRole('link', { name: /evaluate/i })
+      expect(evaluateLinks.length).toBeGreaterThanOrEqual(mockJobs.length)
+      const hrefs = evaluateLinks.map((l) => l.getAttribute('href'))
+      expect(hrefs).toContain('/jobs/job-1')
+      expect(hrefs).toContain('/jobs/job-2')
     })
   })
 })
