@@ -1,0 +1,42 @@
+# Dependencies (rebuilt in Docker)
+web/node_modules
+
+# Build output (rebuilt in Docker)
+web/.next
+
+# Secrets — never bake into image
+web/.env
+web/.env.local
+web/.env*.local
+
+# Prisma generated client (regenerated in builder stage)
+web/src/generated
+
+# Storage / user data
+web/storage
+
+# Dev/test artifacts
+web/coverage
+web/**/*.test.ts
+web/**/*.spec.ts
+web/vitest.config.ts
+web/vitest.setup.ts
+
+# Misc
+web/.DS_Store
+web/tsconfig.tsbuildinfo
+
+# Parent repo — exclude heavy dirs not needed in image
+.git
+output
+batch
+reports
+data
+jds
+interview-prep
+examples
+# Exclude parent node_modules EXCEPT playwright (needed by Turbopack in builder
+# to resolve generate-pdf.mjs's import chain during next build)
+node_modules
+!node_modules/playwright
+!node_modules/playwright-core
