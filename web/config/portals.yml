@@ -1,55 +1,100 @@
-# User-owned configuration — add/remove companies freely.
-# Slugs are auto-detected from careers_url. If a board 404s or errors, it is silently skipped.
-# title_filter: positive = at least one must match (case-insensitive substring); negative = any match = excluded.
+# CareerOps — Scan boards config (web app)
+#
+# The "Scan boards" button reads this file and pulls live openings directly from
+# each company's ATS public JSON API (Greenhouse / Ashby / Lever) — no web search,
+# no LLM tokens, correct company/role/location. THIS FILE IS YOURS TO CURATE:
+#   - add a company:  give its `name` + `careers_url`; the ATS slug is auto-detected
+#       greenhouse → https://boards.greenhouse.io/<slug>  (or job-boards(.eu).greenhouse.io/<slug>)
+#       ashby      → https://jobs.ashbyhq.com/<slug>
+#       lever      → https://jobs.lever.co/<slug>
+#   - remove or set `enabled: false` on ones you don't want
+#   - a board that 404s or carries no matching roles is skipped silently
+#
+# The companies below were VERIFIED live (board exists + currently carries
+# project/coordinator/operations roles) and deliberately span sectors BEYOND
+# software engineering: global development / NGO, fintech, education, and
+# remote-first operations — many Africa-based or remote-global.
 
+# Which titles to keep (case-insensitive substring). Tuned for an entry-level
+# project / coordination / operations professional. Edit to taste.
 title_filter:
   positive:
     - "project coordinator"
     - "project manager"
     - "junior project"
+    - "project officer"
     - "project administrator"
     - "program coordinator"
+    - "program officer"
+    - "programme coordinator"
     - "operations coordinator"
-    - "associate project"
-    - "project officer"
+    - "operations officer"
+    - "operations associate"
+    - "operations analyst"
+    - "operations specialist"
+    - "implementation officer"
+    - "implementation coordinator"
+    - "administration officer"
+    - "administrative coordinator"
+    - "office administrator"
+    - "community engagement coordinator"
+    - "partnerships coordinator"
+    - "logistics coordinator"
+    - "delivery coordinator"
   negative:
     - "senior"
-    - "lead"
+    - "lead "
     - "principal"
-    - "staff"
+    - "staff "
     - "director"
     - "head of"
     - "vp "
+    - "vice president"
     - "chief"
-    - "manager, "
     - " ii"
     - " iii"
+    - "manager of"
+    - "10+ years"
 
 tracked_companies:
-  # Greenhouse
-  - name: Canonical
-    careers_url: https://job-boards.greenhouse.io/canonical
-  - name: GitLab
+  # ── Global development / NGO / agriculture (often Africa-based) ──
+  - name: One Acre Fund          # smallholder agriculture, East Africa
+    careers_url: https://boards.greenhouse.io/oneacrefund
+  - name: GiveDirectly           # cash transfers; roles incl. DRC / Africa ops
+    careers_url: https://boards.greenhouse.io/givedirectly
+  - name: Educate!               # youth employment — Uganda / Tanzania / Rwanda
+    careers_url: https://boards.greenhouse.io/educate
+  - name: Acumen                 # impact investing; partnerships / insights
+    careers_url: https://boards.greenhouse.io/acumen
+  - name: Wikimedia Foundation   # nonprofit; community partnerships incl. Africa
+    careers_url: https://boards.greenhouse.io/wikimedia
+
+  # ── Fintech / payments (Africa) ──
+  - name: Moniepoint             # Nigerian fintech; CX / implementation / ops officers
+    careers_url: https://boards.greenhouse.io/moniepoint
+  - name: Tala                   # emerging-markets lending; loan operations
+    careers_url: https://jobs.lever.co/tala
+
+  # ── Talent / education / remote-work platforms ──
+  - name: Andela                 # pan-African talent network; delivery / ops
+    careers_url: https://jobs.ashbyhq.com/andela
+  - name: Turing                 # remote talent; project leads / ops
+    careers_url: https://boards.greenhouse.io/turing
+  - name: Toptal                 # remote talent network; marketing / ops
+    careers_url: https://jobs.lever.co/toptal
+
+  # ── Remote-first, cross-sector (operations / program / CX roles) ──
+  - name: Remote                 # global employment platform; many ops roles
+    careers_url: https://boards.greenhouse.io/remotecom
+  - name: Canonical              # Ubuntu; fully remote; posts Junior Project Manager
+    careers_url: https://boards.greenhouse.io/canonical
+  - name: GitLab                 # all-remote; program / CX operations
     careers_url: https://boards.greenhouse.io/gitlab
-  - name: Andela
-    careers_url: https://boards.greenhouse.io/andela
-  - name: Automattic
-    careers_url: https://job-boards.greenhouse.io/automattic
-  - name: Remote.com
-    careers_url: https://job-boards.greenhouse.io/remotecom
-  - name: Wikimedia Foundation
-    careers_url: https://job-boards.greenhouse.io/wikimedia
-  # Ashby
-  - name: Linear
-    careers_url: https://jobs.ashbyhq.com/linear
-  - name: Deel
-    careers_url: https://jobs.ashbyhq.com/deel
-  - name: Vercel
-    careers_url: https://jobs.ashbyhq.com/vercel
-  # Lever
-  - name: Buffer
-    careers_url: https://jobs.lever.co/buffer
-  - name: Doist
-    careers_url: https://jobs.lever.co/doist
-  - name: Help Scout
-    careers_url: https://jobs.lever.co/helpscout
+  - name: Zapier                 # all-remote automation; operations roles
+    careers_url: https://jobs.ashbyhq.com/zapier
+  - name: Mozilla                # mission-driven tech; content / program roles
+    careers_url: https://boards.greenhouse.io/mozilla
+
+  # ── Add your own below (Greenhouse / Ashby / Lever) ──
+  # - name: Example Org
+  #   careers_url: https://boards.greenhouse.io/exampleorg
