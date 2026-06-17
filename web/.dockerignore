@@ -27,7 +27,6 @@ web/.DS_Store
 web/tsconfig.tsbuildinfo
 
 # Parent repo — exclude heavy dirs not needed in image
-node_modules
 .git
 output
 batch
@@ -36,3 +35,8 @@ data
 jds
 interview-prep
 examples
+# Exclude parent node_modules EXCEPT playwright (needed by Turbopack in builder
+# to resolve generate-pdf.mjs's import chain during next build)
+node_modules
+!node_modules/playwright
+!node_modules/playwright-core

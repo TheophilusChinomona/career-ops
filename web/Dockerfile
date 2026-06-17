@@ -30,6 +30,12 @@ COPY generate-pdf.mjs /build/
 COPY fonts/ /build/fonts/
 COPY templates/ /build/templates/
 
+# playwright is used by generate-pdf.mjs at runtime.  It lives in the parent
+# repo's node_modules (not web's), so we copy it here so Turbopack can resolve
+# the import chain during the Next.js build.
+COPY node_modules/playwright /build/node_modules/playwright
+COPY node_modules/playwright-core /build/node_modules/playwright-core
+
 # Build Next.js (standalone output enabled in next.config.ts)
 RUN npm run build
 
