@@ -42,7 +42,7 @@ export async function POST(
 
     return Response.json(updated)
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Internal error'
-    return Response.json({ error: message }, { status: 500 })
+    console.error('[status] unexpected error', err)
+    return Response.json({ error: 'Internal error' }, { status: 500 })
   }
 }

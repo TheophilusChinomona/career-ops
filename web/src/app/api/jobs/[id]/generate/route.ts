@@ -121,7 +121,7 @@ export async function POST(
       pdfUrl: `/api/documents/${doc.id}/pdf`,
     })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Internal error'
-    return Response.json({ error: message }, { status: 500 })
+    console.error('[generate] unexpected error', err)
+    return Response.json({ error: 'Internal error' }, { status: 500 })
   }
 }

@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     return Response.json({ profile, cvMaster })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Internal error'
-    return Response.json({ error: message }, { status: 500 })
+    console.error('[profile] unexpected error', err)
+    return Response.json({ error: 'Internal error' }, { status: 500 })
   }
 }

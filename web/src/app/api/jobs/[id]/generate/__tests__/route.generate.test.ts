@@ -217,6 +217,6 @@ describe('POST /api/jobs/[id]/generate', () => {
     const res = await POST(req as Parameters<typeof POST>[0], ctx)
     expect(res.status).toBe(500)
     const body = await res.json()
-    expect(body.error).toBe('DB error')
+    expect(body.error).toBe('Internal error')
   })
 })
