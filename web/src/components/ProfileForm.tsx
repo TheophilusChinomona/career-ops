@@ -651,7 +651,7 @@ export default function ProfileForm({ initialProfile, initialCvMaster }: Profile
         <button
           type="submit"
           disabled={status === 'saving'}
-          className="px-5 py-2 rounded bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
+          className="px-5 py-2 rounded bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-700 disabled:opacity-60 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200"
         >
           {status === 'saving' ? 'Saving…' : 'Save Profile'}
         </button>
