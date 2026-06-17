@@ -138,7 +138,7 @@ export default function FindPage() {
           type="button"
           onClick={handleScan}
           disabled={loading || scanning}
-          className="rounded-lg bg-neutral-700 dark:bg-neutral-200 text-white dark:text-neutral-900 px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 px-4 py-2 text-sm font-semibold hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
         >
           {scanning ? 'Scanning…' : 'Scan boards'}
         </button>
