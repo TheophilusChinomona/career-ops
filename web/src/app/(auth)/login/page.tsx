@@ -43,7 +43,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-zinc-50 dark:bg-black">
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-lg font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-50">
+          CareerOps
+        </span>
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">
+          Your AI job-search command center
+        </span>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded-xl bg-white p-8 shadow dark:bg-zinc-900"
