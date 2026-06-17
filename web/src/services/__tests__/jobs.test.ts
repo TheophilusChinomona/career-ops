@@ -48,11 +48,30 @@ describe('addCandidates', () => {
     expect(mockDb.job.createMany).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.arrayContaining([
-          expect.objectContaining({ company: 'Acme', userId: 'user-1' }),
+          expect.objectContaining({ company: 'Acme', role: 'Engineering Manager', userId: 'user-1' }),
         ]),
       }),
     )
     // createMany was called with exactly 1 row
+    expect(mockDb.job.createMany.mock.calls[0][0].data).toHaveLength(1)
+    expect(count).toBe(1)
+  })
+
+  it('dedupes within the incoming batch (same company+role appears twice → only 1 row inserted)', async () => {
+    // No existing jobs for this user
+    mockDb.job.findMany.mockResolvedValue([])
+    mockDb.job.createMany.mockResolvedValue({ count: 1 })
+
+    const candidates: Candidate[] = [
+      // First occurrence — should be kept
+      { url: 'https://x.com/job/10', title: 'Software Engineer @ TechCo', company: 'TechCo' },
+      // Duplicate within the same batch — should be dropped
+      { url: 'https://x.com/job/11', title: 'Software Engineer @ TechCo', company: 'TechCo' },
+    ]
+
+    const count = await addCandidates('user-1', candidates)
+
+    // Only 1 row should have been passed to createMany
     expect(mockDb.job.createMany.mock.calls[0][0].data).toHaveLength(1)
     expect(count).toBe(1)
   })

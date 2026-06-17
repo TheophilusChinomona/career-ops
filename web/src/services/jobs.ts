@@ -6,7 +6,9 @@ import type { JobStatus } from '../generated/prisma'
 function extractRole(title: string): string {
   // Handle patterns: "Role @ Company", "Role | Company", "Role at Company"
   const parts = title.split(/ @ | \| | at /)
-  return (parts[0] ?? title).trim()
+  const parsed = (parts[0] ?? '').trim()
+  // Fall back to the full title if parsing yields an empty string
+  return parsed || title.trim()
 }
 
 /** Derive company from candidate (falls back to extracting from title) */
@@ -31,19 +33,29 @@ export async function addCandidates(userId: string, candidates: Candidate[]): Pr
 
   const existingSet = new Set(existing.map((j) => `${j.company}::${j.role}`))
 
-  const newRows = candidates
-    .map((c) => ({
-      userId,
-      company: extractCompany(c),
-      role: extractRole(c.title),
-      url: c.url,
-      source: 'firecrawl',
-    }))
-    .filter((r) => !existingSet.has(`${r.company}::${r.role}`))
+  const mapped = candidates.map((c) => ({
+    userId,
+    company: extractCompany(c),
+    role: extractRole(c.title),
+    url: c.url,
+    source: 'firecrawl',
+  }))
+
+  // Filter out rows that already exist in the DB
+  const filtered = mapped.filter((r) => !existingSet.has(`${r.company}::${r.role}`))
+
+  // Dedupe within the batch itself (keep first occurrence of each company::role)
+  const seenInBatch = new Set<string>()
+  const newRows = filtered.filter((r) => {
+    const key = `${r.company}::${r.role}`
+    if (seenInBatch.has(key)) return false
+    seenInBatch.add(key)
+    return true
+  })
 
   if (newRows.length === 0) return 0
 
-  await db.job.createMany({ data: newRows })
+  await db.job.createMany({ data: newRows, skipDuplicates: true })
   return newRows.length
 }
 
@@ -59,5 +71,5 @@ export async function getJob(userId: string, id: string) {
 }
 
 export async function setStatus(userId: string, id: string, status: JobStatus) {
-  return db.job.update({ where: { id }, data: { status } })
+  return db.job.updateMany({ where: { id, userId }, data: { status } })
 }

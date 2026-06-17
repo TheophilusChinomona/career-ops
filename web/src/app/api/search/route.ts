@@ -2,7 +2,7 @@ import { type NextRequest } from 'next/server'
 import { auth } from '@/lib/auth'
 import { env } from '@/lib/env'
 import { searchJobs } from '@/services/search'
-import { addCandidates } from '@/services/jobs'
+import { addCandidates, listJobs } from '@/services/jobs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,8 +21,9 @@ export async function POST(request: NextRequest) {
     const apiKey = env.FIRECRAWL_API_KEY ?? ''
     const candidates = await searchJobs(query, apiKey)
     const added = await addCandidates(session.user.id, candidates)
+    const jobs = await listJobs(session.user.id)
 
-    return Response.json({ candidates: candidates.length, added })
+    return Response.json({ added, jobs })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Internal error'
     return Response.json({ error: message }, { status: 500 })
