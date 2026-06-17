@@ -43,6 +43,12 @@ export default function DashboardView({ jobs }: Props) {
     statusCounts[s] = (statusCounts[s] ?? 0) + 1
   }
 
+  // Top opportunities: best-scored first (unscored last), capped — a dashboard
+  // summarizes; the full pipeline lives in My Jobs.
+  const topOpportunities = [...jobs]
+    .sort((a, b) => (b.score ?? -1) - (a.score ?? -1))
+    .slice(0, 6)
+
   return (
     <div className="flex flex-col gap-6">
       {/* Stats strip */}
@@ -81,14 +87,34 @@ export default function DashboardView({ jobs }: Props) {
         </div>
       </div>
 
-      {/* Job list */}
-      <div className="flex flex-col gap-3">
-        {jobs.map((job) => (
-          <Link key={job.id} href={`/jobs/${job.id}`} className="block">
-            <JobCard job={job} />
+      {/* Top opportunities — highest-scored, not the whole pipeline */}
+      <section className="flex flex-col gap-3">
+        <div className="flex items-baseline justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+            Top opportunities
+          </h2>
+          <Link
+            href="/jobs"
+            className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          >
+            View all {totalJobs} jobs →
           </Link>
-        ))}
-      </div>
+        </div>
+
+        {topOpportunities.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {topOpportunities.map((job) => (
+              <Link key={job.id} href={`/jobs/${job.id}`} className="block">
+                <JobCard job={job} />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="rounded-lg border border-dashed border-neutral-300 dark:border-neutral-700 p-6 text-center text-sm text-neutral-500">
+            No evaluated jobs yet. Open a job and run <span className="font-medium text-neutral-700 dark:text-neutral-300">Evaluate</span> to surface your best matches here.
+          </p>
+        )}
+      </section>
     </div>
   )
 }
