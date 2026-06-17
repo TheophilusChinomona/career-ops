@@ -35,7 +35,7 @@ describe('buildCoverLetterPrompt', () => {
 
     // System must specify plain text output (no JSON)
     expect(system).toMatch(/plain text|no JSON|text only/i)
-    // Verify there's no instruction to return JSON
-    expect(system).not.toMatch(/output.*JSON.*schema/i)
+    // Verify there's no instruction to return JSON (cover output is plain text)
+    expect(system).not.toMatch(/return\s+(?:only\s+)?json|as json/i)
   })
 })
