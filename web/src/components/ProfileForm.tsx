@@ -444,7 +444,7 @@ export default function ProfileForm({ initialProfile, initialCvMaster }: Profile
             <button
               type="button"
               onClick={addExperience}
-              className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              className="text-xs text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
             >
               + Add Role
             </button>
@@ -513,7 +513,7 @@ export default function ProfileForm({ initialProfile, initialCvMaster }: Profile
             <button
               type="button"
               onClick={addEducation}
-              className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              className="text-xs text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
             >
               + Add Education
             </button>
@@ -572,7 +572,7 @@ export default function ProfileForm({ initialProfile, initialCvMaster }: Profile
             <button
               type="button"
               onClick={addCert}
-              className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              className="text-xs text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
             >
               + Add Cert
             </button>
@@ -605,7 +605,7 @@ export default function ProfileForm({ initialProfile, initialCvMaster }: Profile
             <button
               type="button"
               onClick={addSkillGroup}
-              className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              className="text-xs text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
             >
               + Add Skill Group
             </button>
