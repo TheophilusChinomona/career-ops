@@ -41,6 +41,12 @@ title_filter:
     - "partnerships coordinator"
     - "logistics coordinator"
     - "delivery coordinator"
+    # broader entry/mid professional titles (banking, NGO, fintech admin/ops)
+    - "officer"
+    - "administrator"
+    - "associate"
+    - "coordinator"
+    - "project analyst"
   negative:
     - "senior"
     - "lead "
@@ -95,6 +101,28 @@ tracked_companies:
   - name: Mozilla                # mission-driven tech; content / program roles
     careers_url: https://boards.greenhouse.io/mozilla
 
-  # ── Add your own below (Greenhouse / Ashby / Lever) ──
+  # ── Banking / corporate (SmartRecruiters) ──
+  - name: Standard Bank Group    # major South African bank; admin / officer / ops roles
+    careers_url: https://jobs.smartrecruiters.com/StandardBankGroup
+  - name: Avery Dennison         # global materials science; operations roles
+    careers_url: https://jobs.smartrecruiters.com/AveryDennison
+
+  # ── Fintech (Workable) ──
+  - name: Kuda                   # Nigerian neobank; risk / operations officers
+    careers_url: https://apply.workable.com/kuda
+
+  # ── Enterprise (Workday — tenant URLs are specific; copy from the company's careers site) ──
+  - name: Mastercard             # global; specialist / SME / product roles
+    careers_url: https://mastercard.wd1.myworkdayjobs.com/CorporateCareers
+  - name: Red Hat                # open source; remote-friendly; support / ops
+    careers_url: https://redhat.wd5.myworkdayjobs.com/jobs
+
+  # ── Add your own (Greenhouse / Ashby / Lever / SmartRecruiters / Workable / Workday) ──
+  #   greenhouse      → https://boards.greenhouse.io/<slug>
+  #   ashby           → https://jobs.ashbyhq.com/<slug>
+  #   lever           → https://jobs.lever.co/<slug>
+  #   smartrecruiters → https://jobs.smartrecruiters.com/<Slug>
+  #   workable        → https://apply.workable.com/<slug>
+  #   workday         → https://<tenant>.<wd>.myworkdayjobs.com/<Site>  (copy the exact URL from the careers page)
   # - name: Example Org
   #   careers_url: https://boards.greenhouse.io/exampleorg
